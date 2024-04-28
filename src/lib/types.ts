@@ -1,0 +1,1 @@
+export type Couleurs = "R" | "G" | "B" | "Y" | "X";
