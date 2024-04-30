@@ -1,3 +1,4 @@
+import Action from "./action";
 import { Couleurs } from "./types";
 
 export default class Revolve {
@@ -76,7 +77,7 @@ export default class Revolve {
 			this.tourneVide();
 		}
 
-		this.log.push("B1 DR");
+		this.insereLog("B1 DR");
 	}
 
 	/**
@@ -102,7 +103,7 @@ export default class Revolve {
 			this.tourneVide();
 		}
 
-		this.log.push("B2 DR");
+		this.insereLog("B2 DR");
 	}
 
 	/**
@@ -128,7 +129,7 @@ export default class Revolve {
 			this.tourneVide(false);
 		}
 
-		this.log.push("B1 GA");
+		this.insereLog("B1 GA");
 	}
 
 	/**
@@ -154,7 +155,7 @@ export default class Revolve {
 			this.tourneVide(false);
 		}
 
-		this.log.push("B2 GA");
+		this.insereLog("B2 GA");
 	}
 
 	public up() {
@@ -197,7 +198,7 @@ export default class Revolve {
 			this.place_vide_h = this.place_vide_h - 1;
 		}
 
-		this.log.push(this.place_vide_silo + " UP");
+		this.insereLog(this.place_vide_silo + 1 + " UP");
 	}
 
 	public down() {
@@ -250,7 +251,7 @@ export default class Revolve {
 			}
 		}
 
-		this.log.push(this.place_vide_silo + " DO");
+		this.insereLog(this.place_vide_silo + 1 + " DO");
 	}
 
 	public isVideInBague1(): boolean {
@@ -275,6 +276,28 @@ export default class Revolve {
 				this.place_vide_silo = 3;
 			} else {
 				this.place_vide_silo = pos_courante - 1;
+			}
+		}
+	}
+
+	/**
+	 * Insère intelligemment une action dans le log.
+	 * L'intelligence est de ne pas ajouter une action qui est l'inverse
+	 * de l'action précédente (et de supprimer l'action précédente)
+	 *
+	 * @param action action à insérer dans le log
+	 */
+	public insereLog(action: string): void {
+		if (this.log.length === 0) {
+			this.log.push(action);
+		} else {
+			const act_suiv = new Action(action);
+			const prec = this.log[this.log.length - 1];
+			
+			if (!act_suiv.isInverse(prec)) {
+				this.log.push(action);
+			} else {
+				this.log.pop();
 			}
 		}
 	}
@@ -331,7 +354,7 @@ export default class Revolve {
 	 * @returns a string giving the place of empty cell
 	 */
 	public getVide() {
-		return `c ${this.place_vide_silo + 1} - h ${this.place_vide_h +1}`;
+		return `c ${this.place_vide_silo + 1} - h ${this.place_vide_h + 1}`;
 	}
 
 	/**
@@ -342,6 +365,17 @@ export default class Revolve {
 		return this.log;
 	}
 
+	/**
+	 * fixe le log à la valeur fournie en paramètre
+	 * @param current un nouveau log a mémoriser
+	 */
+	public setLog(current: string[]): void {
+		this.log = current;
+	}
+
+	/**
+	 * Reset le log
+	 */
 	public resetLog() {
 		this.log = [];
 	}
