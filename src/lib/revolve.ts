@@ -9,8 +9,9 @@ export default class Revolve {
 	private log: string[] = [];
 
 	constructor(couleurs: string) {
-		this.colors = couleurs;
-		this.initCouleurs(couleurs);
+		const cols_without_space = couleurs.replaceAll(' ', '');
+		this.colors = cols_without_space;
+		this.initCouleurs(cols_without_space);
 	}
 
 	private initCouleurs = (coul: string) => {
