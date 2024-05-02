@@ -1,5 +1,6 @@
 'use client'
 
+import CheckComponent from "@/components/checkcomp";
 import Inputs from "@/components/inputs";
 import Loglist from "@/components/loglist";
 import RevolveGame from "@/components/revolve";
@@ -8,14 +9,16 @@ import { useState } from "react";
 
 export default function Home() {
 
-  const [myRev, setMyRev] = useState(new Revolve("RGGGGXGBBBBBYYYYYRRRR"));
+  const [myRev, setMyRev] = useState(new Revolve("XRGGYYRBRYBGBGGBRBYRY"));
   const [actionLog, setActionLog] = useState<string[]>([]);
+  const [check, setCheck] = useState<boolean>(true);
   //let myRev = new Revolve("RRRRRXGGGGGBBBBBYYYYY");
   //let myRev = new Revolve("RYYYYXGBBBBBYYYYYRRRR");
-  //let myRev = new Revolve("RRRRRXGGGGGBBBBBYYYYY");
+  //let myRev = new Revolve("RGGGGXGBBBBBYYYYYRRRR");
+  //let myRev = new Revolve("XRGGYYRBRYBGBGGBRBYRY");
 
 
-  const str = myRev.getVide();
+  const str = myRev.getVidePosition();
 
   const cree_nouveau = () => {
     const new_rev_str = myRev.to_string();
@@ -24,6 +27,11 @@ export default function Home() {
     new_rev.setLog(old_log);
     setActionLog(old_log);
     setMyRev(new_rev);
+  }
+
+  const check_board = () => {
+    const resu = myRev.check_colors();
+    setCheck(()=>resu);
   }
 
   const B1_DR = () => {
@@ -54,6 +62,14 @@ export default function Home() {
   const reset = () => {
     setMyRev(new Revolve("RGGGGXGBBBBBYYYYYRRRR"));
     setActionLog([]);
+    setCheck(true);
+  }
+
+  const color_editor = (silo: number, haut: number) => {
+    myRev.edit_color(silo, haut);
+    const game = myRev.to_string();
+    setMyRev(new Revolve(game));
+    check_board();
   }
 
   const parama = {
@@ -70,12 +86,16 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-evenly pt-4">
       <em>REVOLVE SIMULATOR by ESHome33</em>
       <div className="flex min-h-screen flex-col items-center justify-evenly sm:flex-row space-y-4 ">
-        <div className="flex flex-col justify-between min-w-0.5 items-center space-y-2">
+        <div className="flex flex-col justify-between min-w-0.5 items-center space-y-2 mx-2">
           <div className="text-xs pb-2">vide en [{str}]</div>
-          <RevolveGame game={myRev} />
+          <RevolveGame
+            game={myRev}
+            color_edit={color_editor}
+          />
           <Inputs actions={parama} />
+          <CheckComponent value={check} />
         </div>
-        <div className="ml-8">
+        <div className="min-w-0.5 mx-2">
           <Loglist list={actionLog} />
         </div>
       </div>

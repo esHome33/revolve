@@ -3,13 +3,14 @@ import CaseCouleur from "./case";
 
 type Props = {
     colors: string;
+    color_edit: (s: number, h: number) => void;
 }
 
 
 const init = (str: string) => {
     var resu: Couleurs[] = ["X", "X", "X", "X", "X", "X"];
     if (!str) {
-
+        return resu;
     }
     resu = [];
     for (let index = 0; index < str.length; index++) {
@@ -29,11 +30,31 @@ const Colonne1 = (props: Props) => {
     return (
         <div className="flex flex-col space-y-4">
             {cols.map((elt, index) => {
-
                 if (index < 6) {
-                    return <div key={index}>
-                        <CaseCouleur couleur={elt} />
-                    </div>
+                    if (index === 4 || index === 0 || index === 2) {
+                        return (
+                            <>
+                                <div key={index}>
+                                    <CaseCouleur
+                                        couleur={elt}
+                                        color_edit={props.color_edit}
+                                        h={index}
+                                        silo={0}
+                                    />
+                                </div>
+                                <hr className="-m-2" />
+                            </>
+                        )
+                    } else {
+                        return <div key={index}>
+                            <CaseCouleur
+                                couleur={elt}
+                                color_edit={props.color_edit}
+                                h={index}
+                                silo={0}
+                            />
+                        </div>
+                    }
                 }
             }
             )}

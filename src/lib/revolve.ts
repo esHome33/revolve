@@ -1,5 +1,5 @@
 import Action from "./action";
-import { Couleurs } from "./types";
+import { Col1, Col2, Col3, Col4, ColVide, Couleurs } from "./types";
 
 export default class Revolve {
 	readonly colors: string;
@@ -15,7 +15,9 @@ export default class Revolve {
 
 	private initCouleurs = (coul: string) => {
 		if (coul.length != 21) {
-			throw new Error(`the game needs 21 pieces and not ${coul.length}`);
+			throw new Error(
+				`The game needs exactly 21 pieces and not ${coul.length}`
+			);
 		}
 		let h = 0;
 		let silo = 0;
@@ -23,17 +25,15 @@ export default class Revolve {
 		for (let index = 0; index < coul.length; index++) {
 			const element = coul[index] as Couleurs;
 			if (
-				element !== "R" &&
-				element !== "B" &&
-				element !== "G" &&
-				element !== "X" &&
-				element !== "Y"
+				element !== Col1 &&
+				element !== Col2 &&
+				element !== Col3 &&
+				element !== Col4 &&
+				element !== ColVide
 			) {
-				throw new Error(
-					`attention ce caractère n'est pas admis (${element})`
-				);
+				throw new Error(`This character (${element}) is not a valid color`);
 			}
-			if (element === "X") {
+			if (element === ColVide) {
 				// noter l'emplacement de la place vide
 				this.place_vide_h = h;
 				this.place_vide_silo = silo;
@@ -293,7 +293,7 @@ export default class Revolve {
 		} else {
 			const act_suiv = new Action(action);
 			const prec = this.log[this.log.length - 1];
-			
+
 			if (!act_suiv.isInverse(prec)) {
 				this.log.push(action);
 			} else {
@@ -353,7 +353,7 @@ export default class Revolve {
 	 * Décrit le silo et la hauteur où se trouve la cellule vide
 	 * @returns a string giving the place of empty cell
 	 */
-	public getVide() {
+	public getVidePosition() {
 		return `c ${this.place_vide_silo + 1} - h ${this.place_vide_h + 1}`;
 	}
 
@@ -378,5 +378,101 @@ export default class Revolve {
 	 */
 	public resetLog() {
 		this.log = [];
+	}
+
+	public edit_color(silo: number, hauteur: number) {
+		if (silo === 0) {
+			if (hauteur >= 0 && hauteur < 6) {
+				const couleur_a_changer = this.cols[silo][hauteur];
+				const next_color = this.get_next_color(couleur_a_changer);
+				this.cols[silo][hauteur] = next_color;
+			} else {
+				throw new Error(
+					`Argument Exception : incorrect value of hauteur (${hauteur}) for silo = ${silo}`
+				);
+			}
+		} else if (silo > 0) {
+			if (hauteur >= 0 && hauteur < 5) {
+				const couleur_a_changer = this.cols[silo][hauteur];
+				const next_color = this.get_next_color(couleur_a_changer);
+				this.cols[silo][hauteur] = next_color;
+			} else {
+				throw new Error(
+					`Argument Exception : incorrect value of hauteur (${hauteur}) for silo = ${silo}`
+				);
+			}
+		} else {
+			throw new Error(
+				`Argument Exception : incorrect value of silo (${silo}) `
+			);
+		}
+	}
+
+	private get_next_color(col: string): Couleurs {
+		if (col === Col1) {
+			return Col2;
+		} else if (col === Col2) {
+			return Col3;
+		} else if (col === Col3) {
+			return Col4;
+		} else if (col === Col4) {
+			return ColVide;
+		} else if (col === ColVide) {
+			return Col1;
+		} else {
+			throw new Error(
+				`Argument Exception : ${col} n'est pas une couleur admise`
+			);
+		}
+	}
+
+	/**
+	 * Check the validity of the colors array.
+	 * There must be only 1 empty space, 21 colors (including empty color) 
+	 * and exactly 5 items of each of the 4 colors.
+	 * 
+	 * @returns TRUE if theres only 1 empty space, 21 items and exactly 5 items of each of the 4 colors.
+	 */
+	public check_colors(): boolean {
+		let empty_count = 0;
+		let total_items_count = 0;
+		let col1_count = 0;
+		let col2_count = 0;
+		let col3_count = 0;
+		let col4_count = 0;
+		for (let silo = 0; silo < 4; silo++) {
+			const column = this.cols[silo];
+			column.forEach(char => {
+				if (char === Col1) {
+					col1_count++;
+					total_items_count++;
+				} else if (char === Col2) {
+					col2_count++;
+					total_items_count++;
+				} else if (char === Col3) {
+					col3_count++;
+					total_items_count++;
+				} else if (char === Col4) {
+					col4_count++;
+					total_items_count++;
+				} else if (char === ColVide) {
+					empty_count++;
+					total_items_count++;
+				} else {
+					return false;
+				}
+			});
+		}
+		if (
+			total_items_count === 21 &&
+			col1_count === 5 &&
+			col2_count === 5 &&
+			col3_count === 5 &&
+			col4_count === 5 &&
+			empty_count === 1
+		)
+			return true;
+		else
+			return false;
 	}
 }

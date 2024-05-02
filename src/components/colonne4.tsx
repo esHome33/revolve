@@ -3,6 +3,7 @@ import CaseCouleur from "./case";
 
 type Props = {
     colors: string;
+    color_edit: (s: number, h: number) => void;
 }
 
 
@@ -28,9 +29,28 @@ const Colonne4 = (props: Props) => {
         <div className="flex flex-col space-y-4">
             {cols.map((elt, index) => {
                 if (index < 5) {
-                    return <div key={index}>
-                        <CaseCouleur couleur={elt} />
-                    </div>
+                    if (index === 0 || index === 2) {
+                        return (<>
+                            <div key={index}>
+                                <CaseCouleur
+                                    couleur={elt}
+                                    color_edit={props.color_edit}
+                                    h={index}
+                                    silo={3}
+                                />
+                            </div>
+                            <hr className="-m-2" />
+                        </>)
+                    } else {
+                        return (<div key={index}>
+                            <CaseCouleur
+                                couleur={elt}
+                                color_edit={props.color_edit}
+                                h={index}
+                                silo={3}
+                            />
+                        </div>)
+                    }
                 }
             }
             )}
