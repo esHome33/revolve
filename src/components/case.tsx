@@ -1,8 +1,10 @@
+'use client';
+
 import { Col1, Col2, Col3, Col4, ColVide, Couleurs } from "@/lib/types"
 
 type Props = {
     couleur: Couleurs;
-    color_edit: (s:number, h:number) => void;
+    color_edit: (s: number, h: number) => void;
     silo: number;
     h: number;
 }
@@ -24,7 +26,7 @@ const CaseCouleur = (props: Props) => {
                 return (
                     <div
                         className={`${dim} bg-red-500 rounded`}
-                        onClick={()=>props.color_edit(props.silo,props.h)}
+                        onClick={() => props.color_edit(props.silo, props.h)}
                     ></div>
                 )
             }

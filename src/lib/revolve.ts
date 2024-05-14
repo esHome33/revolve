@@ -2,6 +2,9 @@ import Action from "./action";
 import { Col1, Col2, Col3, Col4, ColVide, Couleurs } from "./types";
 
 export default class Revolve {
+	/**
+	 * initial game
+	 */
 	readonly colors: string;
 	private cols: Couleurs[][] = [];
 	private place_vide_silo: number = 0;
@@ -9,8 +12,8 @@ export default class Revolve {
 	private log: string[] = [];
 
 	constructor(couleurs: string) {
-		const cols_without_space = couleurs.replaceAll(' ', '');
-		this.colors = cols_without_space;
+		const cols_without_space = couleurs.replaceAll(" ", "");
+		this.colors = couleurs;
 		this.initCouleurs(cols_without_space);
 	}
 
@@ -54,6 +57,47 @@ export default class Revolve {
 			}
 		}
 	};
+
+	/**
+	 * when getting a file from backend, all the moves are on the same line
+	 * This function separates all moves with a linefeed character.
+	 *
+	 * @param moves moves on one line (not separated)
+	 * @returns moves separated with a \n character.
+	 */
+	static traiteMovesBrut(moves: string): string {
+		let compteur = 0;
+		let resu: string = "";
+		for (let index = 0; index < moves.length; index++) {
+			const element = moves[index];
+			resu += element;
+			if (compteur === 4) {
+				resu += "\n";
+				compteur = 0;
+			} else {
+				compteur++;
+			}
+		}
+		return resu;
+	}
+
+	/**
+	 * From a string containing abreviated moves produces all moves
+	 * in detailed description and separated by libnefeeds and carriage returns.
+	 * Theres no need to use {@link traiteMovesBrut}.
+	 *
+	 * @param moves_abreviated moves in abreviated form (1 char)
+	 * @returns all the move in complete form and separated by libnefeeds and carriage returns
+	 */
+	static desabreviate(moves_abreviated: string) {
+		let resu: string = "";
+		for (let index = 0; index < moves_abreviated.length; index++) {
+			const element = moves_abreviated[index];
+			const move = Action.abrege_inverse(element);
+			resu += move + "\n";
+		}
+		return resu;
+	}
 
 	/**
 	 * droite_1 tourne à droite l'anneau 1
@@ -199,7 +243,7 @@ export default class Revolve {
 			this.place_vide_h = this.place_vide_h - 1;
 		}
 
-		this.insereLog(this.place_vide_silo + 1 + " UP");
+		this.insereLog("0" + (this.place_vide_silo + 1) + " UP");
 	}
 
 	public down() {
@@ -252,7 +296,7 @@ export default class Revolve {
 			}
 		}
 
-		this.insereLog(this.place_vide_silo + 1 + " DO");
+		this.insereLog("0" + (this.place_vide_silo + 1) + " DO");
 	}
 
 	public isVideInBague1(): boolean {
@@ -303,13 +347,58 @@ export default class Revolve {
 		}
 	}
 
+	public play_log(log: string[]): void {
+		for (let index = 0; index < log.length; index++) {
+			const element = log[index];
+			if (element.indexOf("UP") !== -1) {
+			}
+		}
+	}
+
+	private mouves = {
+		"01 UP": this.up,
+		"02 UP": this.up,
+		"03 UP": this.up,
+		"04 UP": this.up,
+		"01 DO": this.down,
+		"02 DO": this.down,
+		"03 DO": this.down,
+		"04 DO": this.down,
+		"B1 GA": this.gauche_1,
+		"B1 DR": this.droite_1,
+		"B2 GA": this.gauche_2,
+		"B2 DR": this.droite_2,
+	};
+
+	/**
+	 * Get all the moves played in a single string. Moves are separated by '\n'.
+	 *
+	 * @returns all the moves logged in a single string.
+	 */
+	public getAllMoves(): string {
+		let resu: string = "";
+
+		for (let index = 0; index < this.log.length; index++) {
+			const element = this.log[index];
+			const elt_abrege = Action.abrege(element);
+			const inv = Action.abrege_inverse(elt_abrege);
+			if (inv !== element) {
+				throw new Error(
+					`INVERSION failed for ${element} and ${elt_abrege}`
+				);
+			}
+			resu += elt_abrege;
+		}
+		return resu;
+	}
+
 	public to_string() {
 		const c1 = this.get_col1();
 		const c2 = this.get_col2();
 		const c3 = this.get_col3();
 		const c4 = this.get_col4();
 
-		return c1 + c2 + c3 + c4;
+		return c1 + " " + c2 + " " + c3 + " " + c4;
 	}
 
 	public get_col1(): string {
@@ -429,9 +518,9 @@ export default class Revolve {
 
 	/**
 	 * Check the validity of the colors array.
-	 * There must be only 1 empty space, 21 colors (including empty color) 
+	 * There must be only 1 empty space, 21 colors (including empty color)
 	 * and exactly 5 items of each of the 4 colors.
-	 * 
+	 *
 	 * @returns TRUE if theres only 1 empty space, 21 items and exactly 5 items of each of the 4 colors.
 	 */
 	public check_colors(): boolean {
@@ -443,7 +532,7 @@ export default class Revolve {
 		let col4_count = 0;
 		for (let silo = 0; silo < 4; silo++) {
 			const column = this.cols[silo];
-			column.forEach(char => {
+			column.forEach((char) => {
 				if (char === Col1) {
 					col1_count++;
 					total_items_count++;
@@ -473,7 +562,6 @@ export default class Revolve {
 			empty_count === 1
 		)
 			return true;
-		else
-			return false;
+		else return false;
 	}
 }

@@ -2,7 +2,7 @@ import { Couleurs } from "@/lib/types";
 import CaseCouleur from "./case";
 
 type Props = {
-    colors: string;
+    colors: string | undefined;
     color_edit: (s: number, h: number) => void;
 }
 
@@ -23,6 +23,9 @@ const init = (str: string) => {
 
 const Colonne3 = (props: Props) => {
 
+    if (!props.colors) {
+        return null;
+    }
     const cols = init(props.colors);
 
     return (
@@ -30,7 +33,20 @@ const Colonne3 = (props: Props) => {
             {cols.map((elt, index) => {
                 if (index < 5) {
                     if (index === 0 || index === 2) {
-                        return (<>
+                        return (
+                            <div key={index} className="space-y-4">
+                                <div>
+                                    <CaseCouleur
+                                        couleur={elt}
+                                        color_edit={props.color_edit}
+                                        h={index}
+                                        silo={2}
+                                    />
+                                </div>
+                                <hr className="-m-2" />
+                            </div>);
+                    } else {
+                        return (
                             <div key={index}>
                                 <CaseCouleur
                                     couleur={elt}
@@ -38,19 +54,10 @@ const Colonne3 = (props: Props) => {
                                     h={index}
                                     silo={2}
                                 />
-                            </div>
-                            <hr className="-m-2" />
-                        </>)
-                    } else {
-                        return (<div key={index}>
-                            <CaseCouleur
-                                couleur={elt}
-                                color_edit={props.color_edit}
-                                h={index}
-                                silo={2}
-                            />
-                        </div>)
+                            </div>);
                     }
+                } else {
+                    return null;
                 }
             }
             )}

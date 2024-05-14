@@ -1,3 +1,5 @@
+'use client';
+
 import Revolve from "@/lib/revolve"
 import Colonne1 from "./colonne1"
 import Colonne2 from "./colonne2"
@@ -5,11 +7,14 @@ import Colonne3 from "./colonne3"
 import Colonne4 from "./colonne4"
 
 type Props = {
-    game: Revolve;
+    game: Revolve | undefined;
     color_edit: (s: number, h: number) => void;
 }
 
 const RevolveGame = (props: Props) => {
+    if (!props.game) {
+        return null;
+    }
     return (
         <div className="flex flex-row space-x-4">
             <Colonne1

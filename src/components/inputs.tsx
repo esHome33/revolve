@@ -2,10 +2,10 @@
 
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import RectangleTwoToneIcon from '@mui/icons-material/RectangleTwoTone';
+//import RectangleTwoToneIcon from '@mui/icons-material/RectangleTwoTone';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
-import Revolve from '@/lib/revolve';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 type Props = {
   actions: {
@@ -38,7 +38,7 @@ const Inputs = (props: Props) => {
         <button
           className="bg-gray-500 w-10 h-10 rounded text-yellow-200"
           onClick={props.actions.reset}
-        ><RectangleTwoToneIcon /></button>
+        ><RestartAltIcon /></button>
         <button
           className="bg-gray-500 w-10 h-10 rounded text-yellow-200"
           onClick={props.actions.do}
