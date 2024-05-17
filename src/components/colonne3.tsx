@@ -1,5 +1,7 @@
+'use client'
 import { Couleurs } from "@/lib/types";
 import CaseCouleur from "./case";
+import { useState, useEffect } from "react";
 
 type Props = {
     colors: string | undefined;
@@ -23,9 +25,17 @@ const init = (str: string) => {
 
 const Colonne3 = (props: Props) => {
 
-    if (!props.colors) {
+    const [onclient, setOnclient] = useState<boolean>(false);
+
+    useEffect(() => {
+        setOnclient(true);
+    }, []);
+
+    if (!onclient || props.colors === undefined) {
         return null;
     }
+
+
     const cols = init(props.colors);
 
     return (

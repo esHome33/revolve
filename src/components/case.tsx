@@ -1,6 +1,7 @@
 'use client';
 
 import { Col1, Col2, Col3, Col4, ColVide, Couleurs } from "@/lib/types"
+import { useEffect, useState } from "react";
 
 type Props = {
     couleur: Couleurs;
@@ -13,6 +14,17 @@ const dim = "w-10 h-10 ";
 const dim0 = "w-8 h-8 ";
 
 const CaseCouleur = (props: Props) => {
+
+    const [onclient, setOnclient] = useState<boolean>(false);
+
+    useEffect(() => {
+        setOnclient(true);
+    },[]);
+
+    if (!onclient) {
+        return null;
+    }
+    
     switch (props.couleur) {
         case Col1:
             if (props.h === 0) {

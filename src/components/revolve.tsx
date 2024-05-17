@@ -5,6 +5,7 @@ import Colonne1 from "./colonne1"
 import Colonne2 from "./colonne2"
 import Colonne3 from "./colonne3"
 import Colonne4 from "./colonne4"
+import { useState, useEffect } from "react";
 
 type Props = {
     game: Revolve | undefined;
@@ -12,9 +13,17 @@ type Props = {
 }
 
 const RevolveGame = (props: Props) => {
-    if (!props.game) {
+    const [onclient, setOnclient] = useState<boolean>(false);
+
+    useEffect(() => {
+        setOnclient(true);
+    }, []);
+
+    if (!onclient || props.game === undefined) {
         return null;
     }
+
+
     return (
         <div className="flex flex-row space-x-4">
             <Colonne1
