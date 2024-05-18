@@ -13,6 +13,8 @@ import Modal from "@mui/material/Modal";
 import { Button, ButtonGroup, TextField, Typography } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Fileupload from "@/components/fupload";
+import { FileContent } from "@/lib/types";
 //import PosvideAfficheur from "@/components/posvide";
 
 export default function Home() {
@@ -221,13 +223,42 @@ export default function Home() {
     }
   }
 
+  const onUpload = (cont: FileContent) => {
+    if (!window) {
+      return;
+    }
+    // console.log('content', cont);
+    // create a new game from a file
+    const proposed_new_game = new Revolve(cont.game);
+    const resu = proposed_new_game.check_colors();
+    if (resu) {
+      window.localStorage.setItem("revolve_board", proposed_new_game.colors);
+      jeu.current = (proposed_new_game);
+      //TODO faire la lecture de coups
+      proposed_new_game.play_log(cont.moves);
+      const lg = proposed_new_game.getLog();
+      setActionLog(lg);
+      setCheck(true);
+    }
+
+
+
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-evenly p-2">
 
-      <button className="absolute top-4 left-4 shadow-md shadow-orange-600 p-2 "
-        onClick={toggleOpen}>
-        <AddchartIcon />
-      </button>
+      <div className="absolute top-2 left-2 flex flex-col justify-center align-middle space-y-2">
+
+        <button className="p-2 shadow-md shadow-orange-600"
+          onClick={toggleOpen}>
+          <AddchartIcon />
+        </button>
+
+        <div className="p-2 shadow-md shadow-orange-400">
+          <Fileupload loader={onUpload} />
+        </div>
+      </div>
 
       <em className="py-2">
         <span className="mr-4">REVOLVE SIMULATOR by</span>

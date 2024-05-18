@@ -136,4 +136,9 @@ export default class Action {
 			return Action.action_inverse[idx];
 		}
 	}
+
+	
+	public toString() {
+		return this.lieu + " " + this.dir;
+	}
 }

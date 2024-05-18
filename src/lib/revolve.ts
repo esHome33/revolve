@@ -347,28 +347,52 @@ export default class Revolve {
 		}
 	}
 
-	public play_log(log: string[]): void {
+	public play_log(log: Action[]): void {
 		for (let index = 0; index < log.length; index++) {
 			const element = log[index];
-			if (element.indexOf("UP") !== -1) {
+			const el = element.toString() as
+				| "01 UP"
+				| "02 UP"
+				| "03 UP"
+				| "04 UP"
+				| "01 DO"
+				| "02 DO"
+				| "03 DO"
+				| "04 DO"
+				| "B1 GA"
+				| "B1 DR"
+				| "B2 GA"
+				| "B2 DR";
+			switch (el) {
+				case "01 DO":
+				case "02 DO":
+				case "03 DO":
+				case "04 DO":
+					this.down();
+					break;
+				case "01 UP":
+				case "02 UP":
+				case "03 UP":
+				case "04 UP":
+					this.up();
+					break;
+				case "B1 GA":
+					this.gauche_1();
+					break;
+				case "B1 DR":
+					this.droite_1();
+					break;
+				case "B2 GA":
+					this.gauche_2();
+					break;
+				case "B2 DR":
+					this.droite_2();
+					break;
+				default:
+					break;
 			}
 		}
 	}
-
-	private mouves = {
-		"01 UP": this.up,
-		"02 UP": this.up,
-		"03 UP": this.up,
-		"04 UP": this.up,
-		"01 DO": this.down,
-		"02 DO": this.down,
-		"03 DO": this.down,
-		"04 DO": this.down,
-		"B1 GA": this.gauche_1,
-		"B1 DR": this.droite_1,
-		"B2 GA": this.gauche_2,
-		"B2 DR": this.droite_2,
-	};
 
 	/**
 	 * Get all the moves played in a single string. Moves are separated by '\n'.
