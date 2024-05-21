@@ -9,12 +9,15 @@ import RevolveGame from "@/components/revolve";
 import Revolve from "@/lib/revolve";
 import { useRef, useState } from "react";
 import AddchartIcon from '@mui/icons-material/Addchart';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import Modal from "@mui/material/Modal";
 import { Button, ButtonGroup, TextField, Typography } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Fileupload from "@/components/fupload";
 import { FileContent } from "@/lib/types";
+import HelpScreen from "@/components/helpscreen";
+import NewGame from "@/components/newgame";
 //import PosvideAfficheur from "@/components/posvide";
 
 export default function Home() {
@@ -30,8 +33,9 @@ export default function Home() {
   // un carré rouge ou vert si la position est admissible ou pas
   const [check, setCheck] = useState<boolean>(true);
   const [open, setOpen] = useState<boolean>(false);
+  const [helpOpen, setHelpOpen] = useState<boolean>(false);
   const [newgame, setNewgame] = useState<string>("XRGGYY RBYRY GBGGB RBRYB");
-  const [coups, setCoups] = useState<string>("");
+  const [coups, setCoups] = useState<string>("coucou");
   const [refresh, setRefresh] = useState<boolean>(false);
   //let myRev = new Revolve("RRRRRXGGGGGBBBBBYYYYY");
   //let myRev = new Revolve("RYYYYXGBBBBBYYYYYRRRR");
@@ -152,7 +156,7 @@ export default function Home() {
       setActionLog([]);
       setCheck(true);
       setNewgame("XRGGYY RBYRY GBGGB RBRYB");
-      setCoups("");
+      //setCoups("");
       return;
     }
 
@@ -162,7 +166,7 @@ export default function Home() {
     setActionLog([]);
     setCheck(true);
     setNewgame(saved);
-    setCoups("");
+    //setCoups("");
   }
 
   const color_editor = (silo: number, haut: number) => {
@@ -196,6 +200,12 @@ export default function Home() {
     setOpen(() => !open);
   }
 
+  const toggleHelp = (e: any) => {
+    e.preventDefault();
+    setHelpOpen(!helpOpen);
+  }
+
+
   const new_game = () => {
     const proposed_new_game = new Revolve(newgame);
     const resu = proposed_new_game.check_colors();
@@ -223,6 +233,20 @@ export default function Home() {
     }
   }
 
+
+  const save_new_game = (newgame: string) => {
+    setOpen(!open);
+    const proposed_new_game = new Revolve(newgame);
+    const resu = proposed_new_game.check_colors();
+    if (resu) {
+      window.localStorage.setItem("revolve_board", proposed_new_game.colors);
+      jeu.current = (proposed_new_game);
+      const lg = proposed_new_game.getLog();
+      setActionLog(lg);
+      setCheck(true);
+    }
+  }
+
   const onUpload = (cont: FileContent) => {
     if (!window) {
       return;
@@ -234,7 +258,7 @@ export default function Home() {
     if (resu) {
       window.localStorage.setItem("revolve_board", proposed_new_game.colors);
       jeu.current = (proposed_new_game);
-      //TODO faire la lecture de coups
+      // jouer les coups indiqués
       proposed_new_game.play_log(cont.moves);
       const lg = proposed_new_game.getLog();
       setActionLog(lg);
@@ -248,22 +272,41 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-evenly p-2">
 
-      <div className="absolute top-2 left-2 flex flex-col justify-center align-middle space-y-2">
+      <div className="absolute top-2 left-2 flex flex-col justify-center align-middle space-y-3">
 
-        <button className="p-2 shadow-md shadow-orange-600"
+        <button className="p-1 shadow-md shadow-orange-600 bg-orange-900 rounded h-10"
           onClick={toggleOpen}>
           <AddchartIcon />
         </button>
 
-        <div className="p-2 shadow-md shadow-orange-400">
+        <div className="p-1 shadow-md shadow-green-400 bg-green-900 rounded h-10">
           <Fileupload loader={onUpload} />
         </div>
+
+        <button
+          className="p-1 shadow-md shadow-blue-400 bg-blue-900 rounded h-10 flex flex-row justify-center align-middle"
+          onClick={toggleHelp}
+        >
+          <QuestionMarkIcon className="mt-1" />
+        </button>
+
       </div>
 
-      <em className="py-2">
+      <Typography className="py-2 hidden sm:block"
+        aria-hidden fontStyle={"italic"}
+        variant="body2"
+      >
         <span className="mr-4">REVOLVE SIMULATOR by</span>
         <Link href={"https://github.com/esHome33/revolve"} className="text-blue-400">ESHome33</Link>
-      </em>
+      </Typography>
+
+      <Typography className="py-2 block sm:hidden"
+        aria-hidden fontStyle={"italic"}
+        variant="body2"
+      >
+        REVOLVE Sim
+      </Typography>
+
 
       <div className="flex min-h-screen flex-col justify-start 
       sm:flex-row sm:justify-around">
@@ -286,42 +329,17 @@ export default function Home() {
 
       </div>
 
-      <Modal open={open}>
-        <div className="flex flex-col items-center justify-center min-h-[50vh] ">
-          <Typography>
-            Enter a new game
-          </Typography>
-          <Typography className="text-gray-400 text-xs">
-            21 letters : R (red), G (green), B (blue), Y (yellow), X (empty space)
-          </Typography>
-          <TextField
-            label="new game"
-            size="medium"
-            variant="filled"
-            value={newgame}
-            className=" bg-green-100 w-2/3 rounded mt-4"
-            onChange={(e) => { e.preventDefault(); setNewgame(e.target.value) }}
-          />
-          {
-            coups.length > 0 ? <>
-              <TextField
-                value={coups}
-                variant="filled"
-                label='coups'
-                className=" bg-orange-100 w-2/3 rounded mt-4"
-              />
-            </> : null
-          }
-          <ButtonGroup className="mt-4">
-            <Button
-              className="bg-orange-600 text-white hover:bg-orange-800"
-              onClick={() => new_game()}>OK</Button>
-            <Button className="bg-orange-600 text-white hover:bg-orange-800"
-              onClick={() => setOpen(false)}>Cancel</Button>
-          </ButtonGroup>
+      <NewGame
+        abort={toggleOpen}
+        open={open}
+        save_new_game={save_new_game}
+        current_game={jeu.current?.to_string()}
+      />
 
-        </div>
-      </Modal>
+      <HelpScreen
+        open={helpOpen}
+        close={toggleHelp}
+      />
 
     </main>
   );

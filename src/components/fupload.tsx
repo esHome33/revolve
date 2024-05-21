@@ -24,7 +24,6 @@ const Fileupload = (props: Props) => {
     const litFiles = async () => {
         if (ref.current) {
             if (ref.current.files) {
-                const f = ref.current.files.length;
                 const p = await ref.current.files[0].text();
                 const morceaux = p.split("\n");
                 let resu: FileContent = {
@@ -53,7 +52,7 @@ const Fileupload = (props: Props) => {
     };
 
     return (
-        <div>
+        <div className='w-10 flex flex-row justify-center align-middle h-10 -mt-1'>
             <input
                 ref={ref}
                 type="file"
@@ -70,7 +69,7 @@ const Fileupload = (props: Props) => {
                 onClick={clickButton}
             >
                 <UploadFileIcon
-                    className='justify-center text-green-400'
+                    className=' text-green-400'
                 />
             </Button>
         </div>
