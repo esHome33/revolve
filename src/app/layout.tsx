@@ -7,6 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Revolve simulator - casse tête en bois",
+  metadataBase: new URL("https://revolve2.vercel.app"),
   description: "Revolve - Tour de billes - wooden game simulator - cylinder brain teaser - simulateur de casse tête cylindrique",
   generator: "Next.js",
   keywords: ["nextjs", "puzzle game", "Revolve", "simulator", "casse tête", "simulateur",
@@ -25,7 +26,7 @@ export const metadata: Metadata = {
     description: "Revolve : align 5 same color squares or balls in each of the 4 columns ! Rotate the two rings and place the empty space cleverly.",
     url: "https://revolve2.vercel.app",
     images: [
-      'opengraph-image.png',
+      '/opengraph-image.png',
     ],
     authors: ['ESHome33', 'https://github.com/esHome33'],
   }
