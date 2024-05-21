@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -19,7 +20,15 @@ export const metadata: Metadata = {
     { rel: "apple-touch-icon", url: "icons/icon-128x128.png" },
     { rel: "icon", url: "icons/icon-128x128.png" },
   ],
-
+  openGraph: {
+    title: "Revolve simulator - casse tête en bois",
+    description: "Revolve : align 5 same color squares or balls in each of the 4 columns ! Rotate the two rings and place the empty space cleverly.",
+    url: "https://revolve2.vercel.app",
+    images: [
+      'opengraph-image.png',
+    ],
+    authors: ['ESHome33', 'https://github.com/esHome33'],
+  }
 };
 
 export default function RootLayout({
@@ -29,7 +38,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        {children}
+      </body>
     </html>
   );
 }

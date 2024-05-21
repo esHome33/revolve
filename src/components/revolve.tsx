@@ -1,15 +1,29 @@
+'use client';
+
 import Revolve from "@/lib/revolve"
 import Colonne1 from "./colonne1"
 import Colonne2 from "./colonne2"
 import Colonne3 from "./colonne3"
 import Colonne4 from "./colonne4"
+import { useState, useEffect } from "react";
 
 type Props = {
-    game: Revolve;
+    game: Revolve | undefined;
     color_edit: (s: number, h: number) => void;
 }
 
 const RevolveGame = (props: Props) => {
+    const [onclient, setOnclient] = useState<boolean>(false);
+
+    useEffect(() => {
+        setOnclient(true);
+    }, []);
+
+    if (!onclient || props.game === undefined) {
+        return null;
+    }
+
+
     return (
         <div className="flex flex-row space-x-4">
             <Colonne1

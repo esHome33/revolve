@@ -1,8 +1,11 @@
+'use client';
+
 import { Col1, Col2, Col3, Col4, ColVide, Couleurs } from "@/lib/types"
+import { useEffect, useState } from "react";
 
 type Props = {
     couleur: Couleurs;
-    color_edit: (s:number, h:number) => void;
+    color_edit: (s: number, h: number) => void;
     silo: number;
     h: number;
 }
@@ -11,6 +14,17 @@ const dim = "w-10 h-10 ";
 const dim0 = "w-8 h-8 ";
 
 const CaseCouleur = (props: Props) => {
+
+    const [onclient, setOnclient] = useState<boolean>(false);
+
+    useEffect(() => {
+        setOnclient(true);
+    },[]);
+
+    if (!onclient) {
+        return null;
+    }
+    
     switch (props.couleur) {
         case Col1:
             if (props.h === 0) {
@@ -24,7 +38,7 @@ const CaseCouleur = (props: Props) => {
                 return (
                     <div
                         className={`${dim} bg-red-500 rounded`}
-                        onClick={()=>props.color_edit(props.silo,props.h)}
+                        onClick={() => props.color_edit(props.silo, props.h)}
                     ></div>
                 )
             }
