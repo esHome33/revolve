@@ -13,7 +13,7 @@ type Props = {
 const dim = "w-10 h-10 ";
 const dim_petit = "w-8 h-8 ";
 
-const CaseCouleur = ({silo,h,couleur,color_edit}: Props) => {
+const CaseCouleur = ({ silo, h, couleur, color_edit }: Props) => {
 
     const [onclient, setOnclient] = useState<boolean>(false);
 
@@ -26,7 +26,7 @@ const CaseCouleur = ({silo,h,couleur,color_edit}: Props) => {
     }
 
 
-    const colorise = (col:Couleurs) => {
+    const colorise = (col: Couleurs) => {
         switch (col) {
             case "B":
                 return "bg-blue-500";
@@ -43,10 +43,10 @@ const CaseCouleur = ({silo,h,couleur,color_edit}: Props) => {
 
     const produitCase = (col: Couleurs, silo: number, h: number, grand: boolean) => {
         const couleur = colorise(col);
-        const autres_attributs = "rounded-full ease-out animate-slideRight transition duration-1700";
+        const autres_attributs = "rounded-full animate-slideRight transition ease-eti2 duration-1700";
         if (grand) {
             return (<div
-                className={`${dim} ${couleur} ${autres_attributs} `}
+                className={`${dim} ${couleur} ${autres_attributs}`}
                 onClick={() => color_edit(silo, h)}
             ></div>)
         } else {
