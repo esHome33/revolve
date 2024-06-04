@@ -34,8 +34,7 @@ export default function Home() {
   const [check, setCheck] = useState<boolean>(true);
   const [open, setOpen] = useState<boolean>(false);
   const [helpOpen, setHelpOpen] = useState<boolean>(false);
-  const [newgame, setNewgame] = useState<string>("XRGGYY RBYRY GBGGB RBRYB");
-  const [coups, setCoups] = useState<string>("coucou");
+  //const [newgame, setNewgame] = useState<string>("XRGGYY RBYRY GBGGB RBRYB");
   const [refresh, setRefresh] = useState<boolean>(false);
   //let myRev = new Revolve("RRRRRXGGGGGBBBBBYYYYY");
   //let myRev = new Revolve("RYYYYXGBBBBBYYYYYRRRR");
@@ -59,13 +58,12 @@ export default function Home() {
     } else {
       new_jeu = new Revolve(jeu_saved);
       jeu.current = new_jeu;
-      setNewgame(jeu_saved);
+      //setNewgame(jeu_saved);
     }
     setRefresh(!refresh);
     return new_jeu;
   };
 
-  const [pos_vide, setPos_vide] = useState<string | undefined>(undefined);
 
 
   // const cree_nouveau = () => {
@@ -83,7 +81,6 @@ export default function Home() {
       const current_log = jau.getLog();
       const posvide = jau.getVidePosition();
       setActionLog(current_log);
-      setPos_vide(posvide);
       setRefresh(!refresh);
     }
   };
@@ -144,28 +141,23 @@ export default function Home() {
 
   const reset = () => {
     if (typeof window === "undefined") {
-      console.log("RESET : windows undefined");
       return;
     }
     const saved = window.localStorage.getItem("revolve_board");
     if (!saved) {
-      console.log("RESET : no board saved in local storage");
 
       window.localStorage.setItem("revolve_board", "XRGGYY RBYRY GBGGB RBRYB");
       jeu.current = new Revolve("XRGGYY RBYRY GBGGB RBRYB");
       setActionLog([]);
       setCheck(true);
-      setNewgame("XRGGYY RBYRY GBGGB RBRYB");
+      //setNewgame("XRGGYY RBYRY GBGGB RBRYB");
       //setCoups("");
       return;
     }
-
-    console.log(`RESET : board saved in local storage ${saved}`);
-
     jeu.current = new Revolve(saved);
     setActionLog([]);
     setCheck(true);
-    setNewgame(saved);
+    //setNewgame(saved);
     //setCoups("");
   }
 
@@ -179,7 +171,6 @@ export default function Home() {
       const game = jau.to_string();
       jeu.current = new Revolve(game);
       window.localStorage.setItem("revolve_board", game);
-      setPos_vide(jau.getVidePosition());
       check_board();
       MAJ();
     }
@@ -206,26 +197,26 @@ export default function Home() {
   }
 
 
-  const new_game = () => {
-    const proposed_new_game = new Revolve(newgame);
-    const resu = proposed_new_game.check_colors();
-    if (resu) {
-      setOpen(false);
-      if (!window) {
-        return;
-      }
-      window.localStorage.setItem("revolve_board", proposed_new_game.colors);
-      jeu.current = (proposed_new_game);
-      setActionLog([]);
-      setCheck(true);
-    }
-  }
+  // const new_game = () => {
+  //   const proposed_new_game = new Revolve(newgame);
+  //   const resu = proposed_new_game.check_colors();
+  //   if (resu) {
+  //     setOpen(false);
+  //     if (!window) {
+  //       return;
+  //     }
+  //     window.localStorage.setItem("revolve_board", proposed_new_game.initial_game);
+  //     jeu.current = (proposed_new_game);
+  //     setActionLog([]);
+  //     setCheck(true);
+  //   }
+  // }
 
   const affiche_log = () => {
     const jau = getJeu();
     if (jau) {
       let url = "/game?game=";
-      const game = encodeURI(jau.colors);
+      const game = encodeURI(jau.initial_game);
       url += game + "&moves=";
       const moves = jau.getAllMoves();
       url += moves;
@@ -239,7 +230,7 @@ export default function Home() {
     const proposed_new_game = new Revolve(newgame);
     const resu = proposed_new_game.check_colors();
     if (resu) {
-      window.localStorage.setItem("revolve_board", proposed_new_game.colors);
+      window.localStorage.setItem("revolve_board", proposed_new_game.initial_game);
       jeu.current = (proposed_new_game);
       const lg = proposed_new_game.getLog();
       setActionLog(lg);
@@ -256,7 +247,7 @@ export default function Home() {
     const proposed_new_game = new Revolve(cont.game);
     const resu = proposed_new_game.check_colors();
     if (resu) {
-      window.localStorage.setItem("revolve_board", proposed_new_game.colors);
+      window.localStorage.setItem("revolve_board", proposed_new_game.initial_game);
       jeu.current = (proposed_new_game);
       // jouer les coups indiqués
       proposed_new_game.play_log(cont.moves);
@@ -316,6 +307,7 @@ export default function Home() {
           <RevolveGame
             game={getJeu()}
             color_edit={color_editor}
+            prec_action={undefined}
           />
           <Inputs actions={parama} />
           <div className="mt-4">

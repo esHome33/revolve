@@ -6,14 +6,26 @@ import Colonne2 from "./colonne2"
 import Colonne3 from "./colonne3"
 import Colonne4 from "./colonne4"
 import { useState, useEffect } from "react";
+import Action from "@/lib/action";
 
 type Props = {
     game: Revolve | undefined;
     color_edit: (s: number, h: number) => void;
+    prec_action?: Action;
 }
 
 const RevolveGame = (props: Props) => {
     const [onclient, setOnclient] = useState<boolean>(false);
+
+    const precedentAction = props.prec_action;
+
+    if (precedentAction) {
+        if (precedentAction.dir === "GA") {
+            
+        } else if (precedentAction.dir === "DR") {
+            
+        }
+    }
 
     useEffect(() => {
         setOnclient(true);

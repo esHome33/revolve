@@ -5,15 +5,18 @@ export default class Revolve {
 	/**
 	 * initial game
 	 */
-	readonly colors: string;
+	readonly initial_game: string;
 	private cols: Couleurs[][] = [];
 	private place_vide_silo: number = 0;
 	private place_vide_h: number = 5;
 	private log: string[] = [];
 
+	public prec_1: Couleurs[][] = [];
+	public prec_2: Couleurs[][] = [];
+
 	constructor(couleurs: string) {
 		const cols_without_space = couleurs.replaceAll(" ", "");
-		this.colors = couleurs;
+		this.initial_game = couleurs;
 		this.initCouleurs(cols_without_space);
 	}
 
@@ -35,7 +38,9 @@ export default class Revolve {
 				element !== Col4 &&
 				element !== ColVide
 			) {
-				throw new Error(`This character (${element}) is not a valid color`);
+				throw new Error(
+					`This character (${element}) is not a valid color`
+				);
 			}
 			if (element === ColVide) {
 				// noter l'emplacement de la place vide
@@ -103,6 +108,26 @@ export default class Revolve {
 	 * droite_1 tourne à droite l'anneau 1
 	 */
 	public droite_1() {
+		// met de coté les anciennes couleurs
+		const ligne1 = [
+			this.cols[0][1],
+			this.cols[1][1],
+			this.cols[2][1],
+			this.cols[3][1],
+		];
+		const ligne2 = [
+			this.cols[0][2],
+			this.cols[1][2],
+			this.cols[2][2],
+			this.cols[3][2],
+		];
+		this.prec_1 = [];
+		this.prec_1.push(ligne1);
+		this.prec_1.push(ligne2);
+
+		// effectue le mouvement de décalage vers la droite des lignes
+		// 2 et 3 du jeu(la 1 reste fixe). Cela correspond aux indices 1 et 2
+		// du tableau
 		const c1 = this.cols[3][1];
 		const c2 = this.cols[3][2];
 
@@ -129,6 +154,26 @@ export default class Revolve {
 	 * droite_2 tourne à droite l'anneau 2
 	 */
 	public droite_2() {
+		// met de coté les anciennes couleurs
+		const ligne1 = [
+			this.cols[0][3],
+			this.cols[1][3],
+			this.cols[2][3],
+			this.cols[3][3],
+		];
+		const ligne2 = [
+			this.cols[0][4],
+			this.cols[1][4],
+			this.cols[2][4],
+			this.cols[3][4],
+		];
+
+		this.prec_2 = [];
+		this.prec_2.push(ligne1);
+		this.prec_2.push(ligne2);
+
+		// effectue le décalage
+
 		const c1 = this.cols[3][3];
 		const c2 = this.cols[3][4];
 
@@ -155,6 +200,23 @@ export default class Revolve {
 	 * tourne à gauche la première bague
 	 */
 	public gauche_1() {
+		// met de coté les anciennes couleurs
+		const ligne1 = [
+			this.cols[0][1],
+			this.cols[1][1],
+			this.cols[2][1],
+			this.cols[3][1],
+		];
+		const ligne2 = [
+			this.cols[0][2],
+			this.cols[1][2],
+			this.cols[2][2],
+			this.cols[3][2],
+		];
+		this.prec_1 = [];
+		this.prec_1.push(ligne1);
+		this.prec_1.push(ligne2);
+
 		const c1 = this.cols[0][1];
 		const c2 = this.cols[0][2];
 
@@ -181,6 +243,26 @@ export default class Revolve {
 	 * tourne à gauche la 2e bague
 	 */
 	public gauche_2() {
+		// met de coté les anciennes couleurs
+		const ligne1 = [
+			this.cols[0][3],
+			this.cols[1][3],
+			this.cols[2][3],
+			this.cols[3][3],
+		];
+		const ligne2 = [
+			this.cols[0][4],
+			this.cols[1][4],
+			this.cols[2][4],
+			this.cols[3][4],
+		];
+
+		this.prec_2 = [];
+		this.prec_2.push(ligne1);
+		this.prec_2.push(ligne2);
+
+		// effectue le décalage
+
 		const c1 = this.cols[0][3];
 		const c2 = this.cols[0][4];
 
@@ -266,7 +348,8 @@ export default class Revolve {
 				this.place_vide_h = 0;
 			} else {
 				// échange h et h+1
-				const temp = this.cols[this.place_vide_silo][this.place_vide_h + 1];
+				const temp =
+					this.cols[this.place_vide_silo][this.place_vide_h + 1];
 				this.cols[this.place_vide_silo][this.place_vide_h + 1] =
 					this.cols[this.place_vide_silo][this.place_vide_h];
 				this.cols[this.place_vide_silo][this.place_vide_h] = temp;
@@ -288,7 +371,8 @@ export default class Revolve {
 				this.place_vide_h = 0;
 			} else {
 				// échange h et h+1
-				const temp = this.cols[this.place_vide_silo][this.place_vide_h + 1];
+				const temp =
+					this.cols[this.place_vide_silo][this.place_vide_h + 1];
 				this.cols[this.place_vide_silo][this.place_vide_h + 1] =
 					this.cols[this.place_vide_silo][this.place_vide_h];
 				this.cols[this.place_vide_silo][this.place_vide_h] = temp;
@@ -326,6 +410,59 @@ export default class Revolve {
 	}
 
 	/**
+	 * Récupère les couleurs actuellement situées dans la
+	 * bague 1 (silos 1, 2, 3 et 4, hauteurs 1 et 2).
+	 *
+	 * @returns les couleurs de la bague 1 (tableau de deux lignes
+	 * contenant chacune 4 Couleurs des 4 colonnes)
+	 */
+	public get_bague1(): Couleurs[][] {
+		const resu: Couleurs[][] = [];
+		const ligne1 = [
+			this.cols[0][1],
+			this.cols[1][1],
+			this.cols[2][1],
+			this.cols[3][1],
+		];
+		const ligne2 = [
+			this.cols[0][2],
+			this.cols[1][2],
+			this.cols[2][2],
+			this.cols[3][2],
+		];
+
+		resu.push(ligne1);
+		resu.push(ligne2);
+		return resu;
+	}
+
+	/**
+	 * Récupère les couleurs actuellement situées dans la
+	 * bague 2 (silos 1, 2, 3 et 4, hauteurs 3 et 4).
+	 *
+	 * @returns les couleurs de la bague 2 (tableau de deux lignes
+	 * contenant chacune 4 Couleurs des 4 colonnes)
+	 */
+	public get_bague2(): Couleurs[][] {
+		const resu: Couleurs[][] = [];
+		const ligne1 = [
+			this.cols[0][3],
+			this.cols[1][3],
+			this.cols[2][3],
+			this.cols[3][3],
+		];
+		const ligne2 = [
+			this.cols[0][4],
+			this.cols[1][4],
+			this.cols[2][4],
+			this.cols[3][4],
+		];
+		resu.push(ligne1);
+		resu.push(ligne2);
+		return resu;
+	}
+
+	/**
 	 * Insère intelligemment une action dans le log.
 	 * L'intelligence est de ne pas ajouter une action qui est l'inverse
 	 * de l'action précédente (et de supprimer l'action précédente)
@@ -339,11 +476,167 @@ export default class Revolve {
 			const act_suiv = new Action(action);
 			const prec = this.log[this.log.length - 1];
 
-			if (!act_suiv.isInverse(prec)) {
-				this.log.push(action);
+			if (act_suiv.dir == "UP" || act_suiv.dir == "DO") {
+				if (act_suiv.lieu === "01") {
+					// vérifier si pas 5 up ou 5 do déjà dans le log !
+					// ça annulerait le mouvement et faut vider les 5 derniers
+					// éléments du log
+					if (this.log.length > 4) {
+						const check = this.verif_log5(act_suiv);
+						if (check) {
+							this.vide_log(5);
+						} else {
+							if (!act_suiv.isInverse(prec)) {
+								this.log.push(action);
+							} else {
+								this.log.pop();
+							}
+						}
+					} else {
+						if (!act_suiv.isInverse(prec)) {
+							this.log.push(action);
+						} else {
+							this.log.pop();
+						}
+					}
+				} else {
+					// vérifier si pas 4 up ou 4 do déjà dans le log !
+					// ça annulerait le mouvement et faut vider les 4 derniers
+					// éléments du log
+					if (this.log.length > 3) {
+						const check = this.verif_log4(act_suiv);
+						if (check) {
+							this.vide_log(4);
+						} else {
+							if (!act_suiv.isInverse(prec)) {
+								this.log.push(action);
+							} else {
+								this.log.pop();
+							}
+						}
+					} else {
+						if (!act_suiv.isInverse(prec)) {
+							this.log.push(action);
+						} else {
+							this.log.pop();
+						}
+					}
+				}
+			} else if (act_suiv.dir == "GA" || act_suiv.dir == "DR") {
+				if (this.log.length > 2) {
+					if (this.verif_log3(act_suiv)) {
+						this.vide_log(3);
+					} else {
+						if (!act_suiv.isInverse(prec)) {
+							this.log.push(action);
+						} else {
+							this.log.pop();
+						}
+					}
+				} else {
+					if (!act_suiv.isInverse(prec)) {
+						this.log.push(action);
+					} else {
+						this.log.pop();
+					}
+				}
 			} else {
-				this.log.pop();
+				// ne devrait jamais arriver car il n'y a pas d'autres
+				// mouvements que UP DO GA et DR !!
+				if (!act_suiv.isInverse(prec)) {
+					this.log.push(action);
+				} else {
+					this.log.pop();
+				}
 			}
+		}
+	}
+
+	private verif_log5(action: Action): boolean {
+		let resu: boolean = this.verif_log4(action);
+		if (resu) {
+			let i = this.log.length - 5;
+			const a1 = this.log.at(i);
+			if (a1) {
+				if (a1 == action.toString()) {
+					return true;
+				} else return false;
+			} else return false;
+		} else {
+			return false;
+		}
+	}
+
+	private verif_log4(action: Action): boolean {
+		let i = this.log.length - 1;
+		const a1 = this.log.at(i--);
+		if (a1) {
+			if (a1 == action.toString()) {
+				const a2 = this.log.at(i--);
+				if (a2) {
+					if (a1 != a2) {
+						return false;
+					} else {
+						const a3 = this.log.at(i--);
+						if (a3) {
+							if (a2 != a3) {
+								return false;
+							} else {
+								const a4 = this.log.at(i--);
+								if (a4) {
+									if (a4 == a3) {
+										return true;
+									} else return false;
+								} else return false;
+							}
+						} else {
+							return false;
+						}
+					}
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
+	private verif_log3(action: Action): boolean {
+		let i = this.log.length - 1;
+		const a1 = this.log.at(i--);
+		if (a1) {
+			if (a1 == action.toString()) {
+				const a2 = this.log.at(i--);
+				if (a2) {
+					if (a2 == a1) {
+						const a3 = this.log.at(i);
+						if (a3) {
+							if (a3 == a2) {
+								return true;
+							} else return false;
+						} else {
+							return false;
+						}
+					} else {
+						return false;
+					}
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
+	private vide_log(combien: number): void {
+		for (let i = 0; i < combien; i++) {
+			this.log.pop();
 		}
 	}
 
