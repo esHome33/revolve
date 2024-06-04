@@ -1,5 +1,5 @@
 import Action from "./action";
-import { Col1, Col2, Col3, Col4, ColVide, Couleurs } from "./types";
+import { RED, GREEN, BLUE, YELLOW, EMPTY, Couleurs } from "./types";
 
 export default class Revolve {
 	/**
@@ -32,17 +32,17 @@ export default class Revolve {
 		for (let index = 0; index < coul.length; index++) {
 			const element = coul[index] as Couleurs;
 			if (
-				element !== Col1 &&
-				element !== Col2 &&
-				element !== Col3 &&
-				element !== Col4 &&
-				element !== ColVide
+				element !== RED &&
+				element !== GREEN &&
+				element !== BLUE &&
+				element !== YELLOW &&
+				element !== EMPTY
 			) {
 				throw new Error(
 					`This character (${element}) is not a valid color`
 				);
 			}
-			if (element === ColVide) {
+			if (element === EMPTY) {
 				// noter l'emplacement de la place vide
 				this.place_vide_h = h;
 				this.place_vide_silo = silo;
@@ -816,16 +816,16 @@ export default class Revolve {
 	}
 
 	private get_next_color(col: string): Couleurs {
-		if (col === Col1) {
-			return Col2;
-		} else if (col === Col2) {
-			return Col3;
-		} else if (col === Col3) {
-			return Col4;
-		} else if (col === Col4) {
-			return ColVide;
-		} else if (col === ColVide) {
-			return Col1;
+		if (col === RED) {
+			return GREEN;
+		} else if (col === GREEN) {
+			return BLUE;
+		} else if (col === BLUE) {
+			return YELLOW;
+		} else if (col === YELLOW) {
+			return EMPTY;
+		} else if (col === EMPTY) {
+			return RED;
 		} else {
 			throw new Error(
 				`Argument Exception : ${col} n'est pas une couleur admise`
@@ -850,19 +850,19 @@ export default class Revolve {
 		for (let silo = 0; silo < 4; silo++) {
 			const column = this.cols[silo];
 			column.forEach((char) => {
-				if (char === Col1) {
+				if (char === RED) {
 					col1_count++;
 					total_items_count++;
-				} else if (char === Col2) {
+				} else if (char === GREEN) {
 					col2_count++;
 					total_items_count++;
-				} else if (char === Col3) {
+				} else if (char === BLUE) {
 					col3_count++;
 					total_items_count++;
-				} else if (char === Col4) {
+				} else if (char === YELLOW) {
 					col4_count++;
 					total_items_count++;
-				} else if (char === ColVide) {
+				} else if (char === EMPTY) {
 					empty_count++;
 					total_items_count++;
 				} else {

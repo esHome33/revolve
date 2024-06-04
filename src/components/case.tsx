@@ -1,6 +1,6 @@
 'use client';
 
-import { Col1, Col2, Col3, Col4, ColVide, Couleurs } from "@/lib/types"
+import { Couleurs } from "@/lib/types"
 import { useEffect, useState } from "react";
 
 type Props = {
@@ -11,116 +11,59 @@ type Props = {
 }
 
 const dim = "w-10 h-10 ";
-const dim0 = "w-8 h-8 ";
+const dim_petit = "w-8 h-8 ";
 
-const CaseCouleur = (props: Props) => {
+const CaseCouleur = ({silo,h,couleur,color_edit}: Props) => {
 
     const [onclient, setOnclient] = useState<boolean>(false);
 
     useEffect(() => {
         setOnclient(true);
-    },[]);
+    }, []);
 
     if (!onclient) {
         return null;
     }
-    
-    switch (props.couleur) {
-        case Col1:
-            if (props.h === 0) {
-                return (
-                    <div
-                        className={`${dim0} bg-red-500 rounded mx-auto`}
-                        onClick={() => props.color_edit(props.silo, props.h)}
-                    ></div>
-                )
-            } else {
-                return (
-                    <div
-                        className={`${dim} bg-red-500 rounded`}
-                        onClick={() => props.color_edit(props.silo, props.h)}
-                    ></div>
-                )
-            }
-        case Col2:
-            if (props.h === 0) {
-                return (
-                    <div
-                        className={`${dim0} bg-green-500 rounded mx-auto`}
-                        onClick={() => props.color_edit(props.silo, props.h)}
-                    ></div>
-                )
-            } else {
-                return (
-                    <div
-                        className={`${dim} bg-green-500 rounded`}
-                        onClick={() => props.color_edit(props.silo, props.h)}
-                    ></div>
-                )
-            }
-        case Col3:
-            if (props.h === 0) {
-                return (
-                    <div
-                        className={`${dim0} bg-blue-500 rounded mx-auto`}
-                        onClick={() => props.color_edit(props.silo, props.h)}
-                    ></div>
-                )
-            } else {
-                return (
-                    <div
-                        className={`${dim} bg-blue-500 rounded`}
-                        onClick={() => props.color_edit(props.silo, props.h)}
-                    ></div>
-                )
-            }
-        case Col4:
-            if (props.h === 0) {
-                return (
-                    <div
-                        className={`${dim0} bg-yellow-500 rounded mx-auto`}
-                        onClick={() => props.color_edit(props.silo, props.h)}
-                    ></div>
-                )
-            } else {
-                return (
-                    <div
-                        className={`${dim} bg-yellow-500 rounded`}
-                        onClick={() => props.color_edit(props.silo, props.h)}
-                    ></div>
-                )
-            }
-        case ColVide:
-            if (props.h === 0) {
-                return (
-                    <div
-                        className={`${dim0} bg-black border-white border rounded mx-auto`}
-                        onClick={() => props.color_edit(props.silo, props.h)}
-                    ></div>
-                )
-            } else {
-                return (
-                    <div
-                        className={`${dim} bg-black border-white border rounded`}
-                        onClick={() => props.color_edit(props.silo, props.h)}
-                    ></div>
-                )
-            }
-        default:
-            if (props.h === 0) {
-                return (
-                    <div
-                        className={`${dim0} bg-white border-green-500 border-2 rounded mx-auto`}
-                    ></div>
-                )
-            } else {
-                return (
-                    <div
-                        className={`${dim} bg-white border-green-500 border-2 rounded`}
-                    ></div>
-                )
-            }
+
+
+    const colorise = (col:Couleurs) => {
+        switch (col) {
+            case "B":
+                return "bg-blue-500";
+            case "G":
+                return "bg-green-500";
+            case "R":
+                return "bg-red-500";
+            case "Y":
+                return "bg-yellow-500";
+            case "X":
+                return "border border-gray-600";
+        }
     }
+
+    const produitCase = (col: Couleurs, silo: number, h: number, grand: boolean) => {
+        const couleur = colorise(col);
+        const autres_attributs = "rounded-full ease-out animate-slideRight transition duration-1700";
+        if (grand) {
+            return (<div
+                className={`${dim} ${couleur} ${autres_attributs} `}
+                onClick={() => color_edit(silo, h)}
+            ></div>)
+        } else {
+            return (<div
+                className={`${dim_petit} ${couleur} ${autres_attributs} mx-auto `}
+                onClick={() => color_edit(silo, h)}
+            ></div>)
+        }
+    }
+
+    if (h === 0) {
+        return produitCase(couleur, silo, h, false);
+    } else {
+        return produitCase(couleur, silo, h, true);
+    }
+
+
 }
 
 export default CaseCouleur
