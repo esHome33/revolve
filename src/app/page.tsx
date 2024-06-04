@@ -10,8 +10,7 @@ import Revolve from "@/lib/revolve";
 import { useRef, useState } from "react";
 import AddchartIcon from '@mui/icons-material/Addchart';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import Modal from "@mui/material/Modal";
-import { Button, ButtonGroup, TextField, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Fileupload from "@/components/fupload";
@@ -40,6 +39,8 @@ export default function Home() {
   //let myRev = new Revolve("RYYYYXGBBBBBYYYYYRRRR");
   //let myRev = new Revolve("RGGGGXGBBBBBYYYYYRRRR");
   //let myRev = new Revolve("XRGGYYRBRYBGBGGBRBYRY");
+  const [count, setCount] = useState<number|undefined>(undefined);
+
 
   const router = useRouter();
 
@@ -61,6 +62,7 @@ export default function Home() {
       //setNewgame(jeu_saved);
     }
     setRefresh(!refresh);
+    setCount(jeu.current?.getLogSize())
     return new_jeu;
   };
 
@@ -79,9 +81,9 @@ export default function Home() {
     const jau = getJeu();
     if (jau) {
       const current_log = jau.getLog();
-      const posvide = jau.getVidePosition();
       setActionLog(current_log);
       setRefresh(!refresh);
+      setCount(jau.getLogSize());
     }
   };
 
@@ -92,6 +94,7 @@ export default function Home() {
     if (jau) {
       const resu = jau.check_colors();
       setCheck(() => resu);
+      setCount(jau.getLogSize());
     }
   }
 
@@ -157,6 +160,8 @@ export default function Home() {
     jeu.current = new Revolve(saved);
     setActionLog([]);
     setCheck(true);
+    setCount(undefined);
+
     //setNewgame(saved);
     //setCoups("");
   }
@@ -254,6 +259,7 @@ export default function Home() {
       const lg = proposed_new_game.getLog();
       setActionLog(lg);
       setCheck(true);
+      setCount(proposed_new_game.getLogSize());
     }
 
 
@@ -280,6 +286,10 @@ export default function Home() {
         >
           <QuestionMarkIcon className="mt-1" />
         </button>
+
+        <div className="px-1 py-3 shadow-md shadow-green-200 bg-gray-900 rounded h-10 text-xs text-center">
+          {count?count:""}
+        </div>
 
       </div>
 

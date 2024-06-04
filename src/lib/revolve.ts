@@ -709,6 +709,10 @@ export default class Revolve {
 		return resu;
 	}
 
+	public getLogSize() {
+		return this.log.length;
+	}
+
 	public to_string() {
 		const c1 = this.get_col1();
 		const c2 = this.get_col2();
