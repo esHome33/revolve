@@ -1,7 +1,9 @@
 'use client';
 
+import random_game from "@/lib/generator";
 import { Button, ButtonGroup, Modal, TextField, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 type Props = {
     open: boolean;
@@ -12,7 +14,14 @@ type Props = {
 
 const NewGame = (props: Props) => {
 
+    const generated_game = random_game();
     const [newgame, setNewgame] = useState(props.current_game);
+    const [gengame, setGengame] = useState(generated_game);
+
+    useEffect(() => {
+        setGengame(generated_game);
+    }, []);
+    
 
     const save = () => {
         if (newgame !== props.current_game) {
@@ -32,7 +41,7 @@ const NewGame = (props: Props) => {
                 <Typography>
                     Enter a new game
                 </Typography>
-                <Typography className="text-gray-400 text-xs">
+                <Typography className="text-gray-400 text-xs bg-slate-800 mt-3 p-2 rounded border border-gray-500">
                     21 letters : R (red), G (green), B (blue), Y (yellow), X (empty space)
                 </Typography>
                 <TextField
@@ -40,7 +49,7 @@ const NewGame = (props: Props) => {
                     size="medium"
                     variant="filled"
                     value={newgame}
-                    className=" bg-green-100 w-2/3 rounded mt-4"
+                    className=" bg-green-100 w-2/3 rounded mt-5"
                     onChange={(e) => { e.preventDefault(); setNewgame(e.target.value) }}
                 />
     
@@ -52,6 +61,16 @@ const NewGame = (props: Props) => {
                         onClick={() => props.abort()}>Cancel</Button>
                 </ButtonGroup>
 
+                <Typography
+                    className="mt-6 bg-slate-300 text-black p-4 rounded-md"
+                >
+                    <span
+                        className="text-xs text-blue-800 mr-2 font-mono"
+                    >jeu aléatoire proposé :</span>
+                    <span onClick={() => { navigator.clipboard.writeText(gengame);  toast.success('Copié !')}}>{gengame}</span>
+                </Typography>
+
+                <Toaster />
             </div>
         </Modal>
 

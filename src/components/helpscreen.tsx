@@ -3,6 +3,7 @@
 import { Modal, Typography } from '@mui/material'
 import AddchartIcon from '@mui/icons-material/Addchart';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+import Link from 'next/link';
 
 
 
@@ -15,7 +16,7 @@ const HelpScreen = (props: Props) => {
 
     return (
         <Modal open={props.open} className='bg-slate-700'>
-            <div className="flex flex-col items-center justify-center min-h-[30vh] max-w-sm mx-auto">
+            <div className="flex flex-col items-center justify-center min-h-[30vh] max-w-sm mx-auto p-1">
                 <Typography variant='h5' fontStyle={"italic"} className='mb-3'>
                     Help for Revolve Simulator
                 </Typography>
@@ -46,6 +47,19 @@ const HelpScreen = (props: Props) => {
                 <Typography className='text-center mb-2'>
                     <UploadFileIcon /> lets you insert a new game by uploading a file containing the game and
                     the log.
+                </Typography>
+
+                <Typography className='text-center mb-3' variant='body2' fontStyle={'italic'}>
+                    A game from{" "}
+                    <Link
+                        href={"https://github.com/esHome33"}
+                    >
+                        <span
+                            className='text-sm font-bold text-lime-300'
+                        >
+                        ESHome33
+                    </span>
+                    </Link>
                 </Typography>
 
                 <button
