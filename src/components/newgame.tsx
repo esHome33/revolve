@@ -3,7 +3,6 @@
 import random_game from "@/lib/generator";
 import { Button, ButtonGroup, Modal, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
 
 type Props = {
     open: boolean;
@@ -19,9 +18,10 @@ const NewGame = (props: Props) => {
     const [gengame, setGengame] = useState(generated_game);
 
     useEffect(() => {
-        setGengame(generated_game);
+        const ngg = random_game();
+        setGengame(ngg);
     }, []);
-    
+
 
     const save = () => {
         if (newgame !== props.current_game) {
@@ -33,6 +33,15 @@ const NewGame = (props: Props) => {
         } else {
             props.abort();
         }
+    }
+
+    const clic_random_game = (e: any) => {
+        e.preventDefault();
+        navigator.clipboard.writeText(gengame);
+        setNewgame(gengame);
+        const ngg = random_game();
+        setGengame(ngg);
+        //toast.success('Copié !');
     }
 
     return (
@@ -52,25 +61,28 @@ const NewGame = (props: Props) => {
                     className=" bg-green-100 w-2/3 rounded mt-5"
                     onChange={(e) => { e.preventDefault(); setNewgame(e.target.value) }}
                 />
-    
+
                 <ButtonGroup className="mt-4">
                     <Button
                         className="bg-orange-600 text-white hover:bg-orange-800"
-                        onClick={_e=>save()}>OK</Button>
+                        onClick={_e => save()}>OK</Button>
                     <Button className="bg-orange-600 text-white hover:bg-orange-800"
                         onClick={() => props.abort()}>Cancel</Button>
                 </ButtonGroup>
 
                 <Typography
-                    className="mt-6 bg-slate-300 text-black p-4 rounded-md"
+                    className="mt-6 bg-slate-300 text-black py-1 px-3 rounded"
                 >
-                    <span
-                        className="text-xs text-blue-800 mr-2 font-mono"
-                    >jeu aléatoire proposé :</span>
-                    <span onClick={() => { navigator.clipboard.writeText(gengame);  toast.success('Copié !')}}>{gengame}</span>
+                    <div className="flex flex-col sm:flex-row">
+                        <span
+                            className="text-xs text-blue-800 mr-2 font-mono italic"
+                        >jeu aléatoire proposé :</span>
+                        <span onClick={clic_random_game}>
+                            {gengame}
+                        </span>
+                    </div>
                 </Typography>
 
-                <Toaster />
             </div>
         </Modal>
 
