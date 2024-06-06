@@ -21,6 +21,7 @@ const CaseCouleur = ({ silo, h, couleur, color_edit }: Props) => {
         setOnclient(true);
     }, []);
 
+    
     if (!onclient) {
         return null;
     }
@@ -43,7 +44,7 @@ const CaseCouleur = ({ silo, h, couleur, color_edit }: Props) => {
 
     const produitCase = (col: Couleurs, silo: number, h: number, grand: boolean) => {
         const couleur = colorise(col);
-        const autres_attributs = "rounded-full animate-slideRight transition ease-eti2 duration-1700";
+        const autres_attributs = "rounded-full animate-slideRight transition ease-eti2 duration-950";
         if (grand) {
             return (<div
                 className={`${dim} ${couleur} ${autres_attributs}`}
@@ -57,13 +58,7 @@ const CaseCouleur = ({ silo, h, couleur, color_edit }: Props) => {
         }
     }
 
-    if (h === 0) {
-        return produitCase(couleur, silo, h, false);
-    } else {
-        return produitCase(couleur, silo, h, true);
-    }
-
-
+    return produitCase(couleur, silo, h, (h !== 0));
 }
 
 export default CaseCouleur

@@ -225,6 +225,8 @@ export default function Home() {
       url += game + "&moves=";
       const moves = jau.getAllMoves();
       url += moves;
+      url += "&cps=";
+      url += count
       router.replace(url);
     }
   }
