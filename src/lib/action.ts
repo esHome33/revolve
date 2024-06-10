@@ -91,6 +91,39 @@ export default class Action {
 		}
 	}
 
+	public static inverse(action: Action): string {
+		if (action.dir === "UP") {
+			return action.lieu + " DO";
+		} else if (action.dir === "DO") {
+			return action.lieu + " UP";
+		} else if (action.dir === "GA") {
+			return action.lieu + " DR";
+		} else if (action.dir === "DR") {
+			return action.lieu + " GA";
+		} else {
+			throw new Error(
+				`ERREUR : Ne peut pas inverser cette action ${action.toString()}`
+			);
+		}
+	}
+
+	public static inverse_s(action: string): string {
+		const action_a = new Action(action);
+		if (action_a.dir === "UP") {
+			return action_a.lieu + " DO";
+		} else if (action_a.dir === "DO") {
+			return action_a.lieu + " UP";
+		} else if (action_a.dir === "GA") {
+			return action_a.lieu + " DR";
+		} else if (action_a.dir === "DR") {
+			return action_a.lieu + " GA";
+		} else {
+			throw new Error(
+				`ERREUR : Ne peut pas inverser cette action ${action}`
+			);
+		}
+	}
+
 	/**
 	 * Détermine si les deux actions sont inverses l'une de l'autre.
 	 * @param action une autre action
@@ -127,7 +160,7 @@ export default class Action {
 	 */
 	public static abrege_inverse(action_abregee: string): string {
 		const idx = Action.action_abrege.indexOf(action_abregee);
-		
+
 		if (idx === -1) {
 			throw new Error(
 				`This abreviated action is illegal (${action_abregee})`
@@ -137,7 +170,6 @@ export default class Action {
 		}
 	}
 
-	
 	public toString() {
 		return this.lieu + " " + this.dir;
 	}

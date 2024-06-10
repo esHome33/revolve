@@ -143,6 +143,14 @@ export default function Home() {
         }
     }
 
+    const go_back = () => {
+        const jau = getJeu();
+        if (jau) {
+            jau.back_log();
+            MAJ();
+        }
+    }
+
     const reset = () => {
         if (typeof window === "undefined") {
             return;
@@ -296,6 +304,15 @@ export default function Home() {
                 <div className="px-1 py-3 shadow-md shadow-green-200 bg-gray-900 rounded h-10 text-xs text-center">
                     {count ? count : ""}
                 </div>
+
+                <button
+                    className="px-1 py-3  bg-gray-700 hover:bg-gray-400 hover:text-black 
+                    hover:shadow-md hover:shadow-white
+                    rounded h-10 text-xs text-center"
+                    onClick={go_back}
+                >
+                    BACK
+                </button>
 
             </div>
 

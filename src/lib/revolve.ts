@@ -107,7 +107,7 @@ export default class Revolve {
 	/**
 	 * droite_1 tourne à droite l'anneau 1
 	 */
-	public droite_1() {
+	public droite_1(no_logging?: boolean) {
 		// met de coté les anciennes couleurs
 		const ligne1 = [
 			this.cols[0][1],
@@ -147,13 +147,15 @@ export default class Revolve {
 			this.tourneVide();
 		}
 
-		this.insereLog("B1 DR");
+		if (!no_logging) {
+			this.insereLog("B1 DR");
+		}
 	}
 
 	/**
 	 * droite_2 tourne à droite l'anneau 2
 	 */
-	public droite_2() {
+	public droite_2(no_logging?: boolean) {
 		// met de coté les anciennes couleurs
 		const ligne1 = [
 			this.cols[0][3],
@@ -193,13 +195,13 @@ export default class Revolve {
 			this.tourneVide();
 		}
 
-		this.insereLog("B2 DR");
+		if(!no_logging){this.insereLog("B2 DR");}
 	}
 
 	/**
 	 * tourne à gauche la première bague
 	 */
-	public gauche_1() {
+	public gauche_1(no_logging?: boolean) {
 		// met de coté les anciennes couleurs
 		const ligne1 = [
 			this.cols[0][1],
@@ -236,13 +238,13 @@ export default class Revolve {
 			this.tourneVide(false);
 		}
 
-		this.insereLog("B1 GA");
+		if(!no_logging){this.insereLog("B1 GA");}
 	}
 
 	/**
 	 * tourne à gauche la 2e bague
 	 */
-	public gauche_2() {
+	public gauche_2(no_logging?: boolean) {
 		// met de coté les anciennes couleurs
 		const ligne1 = [
 			this.cols[0][3],
@@ -282,10 +284,12 @@ export default class Revolve {
 			this.tourneVide(false);
 		}
 
-		this.insereLog("B2 GA");
+		if (!no_logging) {
+			this.insereLog("B2 GA");
+		}
 	}
 
-	public up() {
+	public up(no_logging?: boolean) {
 		if (this.place_vide_h === 0) {
 			if (this.place_vide_silo === 0) {
 				// échange 0 et 5
@@ -324,11 +328,12 @@ export default class Revolve {
 			this.cols[this.place_vide_silo][this.place_vide_h] = temp;
 			this.place_vide_h = this.place_vide_h - 1;
 		}
-
-		this.insereLog("0" + (this.place_vide_silo + 1) + " UP");
+		if (!no_logging) {
+			this.insereLog("0" + (this.place_vide_silo + 1) + " UP");
+		}
 	}
 
-	public down() {
+	public down(no_logging?: boolean) {
 		if (this.place_vide_silo === 0) {
 			if (this.place_vide_h === 5) {
 				// échange 0 et 5
@@ -380,7 +385,9 @@ export default class Revolve {
 			}
 		}
 
-		this.insereLog("0" + (this.place_vide_silo + 1) + " DO");
+		if (!no_logging) {
+			this.insereLog("0" + (this.place_vide_silo + 1) + " DO");
+		}
 	}
 
 	public isVideInBague1(): boolean {
@@ -640,57 +647,77 @@ export default class Revolve {
 		}
 	}
 
-	public play_log(log: Action[]): void {
-		for (let index = 0; index < log.length; index++) {
-			const element = log[index];
-			const el = element.toString() as
-				| "01 UP"
-				| "02 UP"
-				| "03 UP"
-				| "04 UP"
-				| "01 DO"
-				| "02 DO"
-				| "03 DO"
-				| "04 DO"
-				| "B1 GA"
-				| "B1 DR"
-				| "B2 GA"
-				| "B2 DR";
+	private play_action(action: string, no_logging?:boolean): void {
+		const el = action as
+			| "01 UP"
+			| "02 UP"
+			| "03 UP"
+			| "04 UP"
+			| "01 DO"
+			| "02 DO"
+			| "03 DO"
+			| "04 DO"
+			| "B1 GA"
+			| "B1 DR"
+			| "B2 GA"
+			| "B2 DR";
+
+		if (el) {
 			switch (el) {
 				case "01 DO":
 				case "02 DO":
 				case "03 DO":
 				case "04 DO":
-					this.down();
+					this.down(no_logging);
 					break;
 				case "01 UP":
 				case "02 UP":
 				case "03 UP":
 				case "04 UP":
-					this.up();
+					this.up(no_logging);
 					break;
 				case "B1 GA":
-					this.gauche_1();
+					this.gauche_1(no_logging);
 					break;
 				case "B1 DR":
-					this.droite_1();
+					this.droite_1(no_logging);
 					break;
 				case "B2 GA":
-					this.gauche_2();
+					this.gauche_2(no_logging);
 					break;
 				case "B2 DR":
-					this.droite_2();
+					this.droite_2(no_logging);
 					break;
 				default:
 					break;
 			}
+		} else throw new Error(`ERREUR action injouable ${action}`);
+	}
+
+	public play_log(log: Action[]): void {
+		for (let index = 0; index < log.length; index++) {
+			const une_action = log[index];
+			this.play_action(une_action.toString());
 		}
 	}
 
 	/**
-	 * Get all the moves played in a single string. Moves are separated by '\n'.
+	 * takes the last move (if any) and removes it from the log
+	 * and plays the inverse of the move ... go back
+	 */
+	public back_log(): void {
+		const the_move = this.log.pop();
+		if (the_move) {
+			const inverse_action = Action.inverse_s(the_move);
+			this.play_action(inverse_action,true);
+		}
+	}
+
+	/**
+	 * Get all the moves played, abreviated.
+	 * Returns a a single string.
 	 *
-	 * @returns all the moves logged in a single string.
+	 * @returns all the moves logged in, abreviated and put on a string.
 	 */
 	public getAllMoves(): string {
 		let resu: string = "";
