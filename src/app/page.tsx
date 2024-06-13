@@ -18,6 +18,7 @@ import { FileContent } from "@/lib/types";
 import HelpScreen from "@/components/helpscreen";
 import NewGame from "@/components/newgame";
 import toast, { Toaster } from "react-hot-toast";
+import ResetAlert from "@/components/resetalert";
 //import PosvideAfficheur from "@/components/posvide";
 
 export default function Home() {
@@ -32,7 +33,13 @@ export default function Home() {
 
     // un carré rouge ou vert si la position est admissible ou pas
     const [check, setCheck] = useState<boolean>(true);
+
+    // alerte en cas de demande de reset
+    const [resetOpen, setResetOpen] = useState<boolean>(false);
+
+    // new game dialog
     const [open, setOpen] = useState<boolean>(false);
+
     const [helpOpen, setHelpOpen] = useState<boolean>(false);
     //const [newgame, setNewgame] = useState<string>("XRGGYY RBYRY GBGGB RBRYB");
     const [refresh, setRefresh] = useState<boolean>(false);
@@ -157,13 +164,10 @@ export default function Home() {
         }
         const saved = window.localStorage.getItem("revolve_board");
         if (!saved) {
-
             window.localStorage.setItem("revolve_board", "XRGGYY RBYRY GBGGB RBRYB");
             jeu.current = new Revolve("XRGGYY RBYRY GBGGB RBRYB");
             setActionLog([]);
             setCheck(true);
-            //setNewgame("XRGGYY RBYRY GBGGB RBRYB");
-            //setCoups("");
             return;
         }
         jeu.current = new Revolve(saved);
@@ -173,6 +177,32 @@ export default function Home() {
 
         //setNewgame(saved);
         //setCoups("");
+    }
+
+
+    const handleResetDemand = () => {
+        if (jeu.current) {
+            if (jeu.current.getLogSize() > 0) {
+                setResetOpen(true);
+            } else {
+                toast("jeu déjà initialisé !", {
+                    duration: 2000,
+                    icon:'🤷🏻',
+                    style: { backgroundColor: '#334155', color: 'lightyellow' },
+                })
+            }
+        }
+    }
+
+    const okForReset = (ok: boolean) => {
+        if (ok) {
+            reset();
+            toast.success("jeu réinitialisé", {
+                style: { backgroundColor: '#334155', color: 'lightyellow' },
+                duration: 2000,
+            });
+        }
+        setResetOpen(false);
     }
 
     const color_editor = (silo: number, haut: number) => {
@@ -195,7 +225,7 @@ export default function Home() {
         b1g: B1_GA,
         b2d: B2_DR,
         b2g: B2_GA,
-        reset: reset,
+        reset: handleResetDemand,
         up: MOVE_UP,
         do: MOVE_DOWN
     }
@@ -251,9 +281,15 @@ export default function Home() {
             const lg = proposed_new_game.getLog();
             setActionLog(lg);
             setCheck(true);
-            toast.success("New game !", { duration: 2000 });
+            toast.success("New game !", {
+                duration: 2000,
+                style: { backgroundColor: '#334155', color: 'lightyellow' },
+            });
         } else {
-            toast.error("La chaine de jeu saisie n'est pas valide !", { duration: 3000 });
+            toast.error("La chaine de jeu saisie n'est pas valide !", {
+                duration: 3000,
+                style: { backgroundColor: '#334155', color: 'lightyellow' },
+            });
         }
     }
 
@@ -315,6 +351,11 @@ export default function Home() {
                 </button>
 
             </div>
+
+            <ResetAlert
+                onClose={okForReset}
+                open={resetOpen}
+            />
 
             <Typography className="py-2 hidden sm:block"
                 aria-hidden fontStyle={"italic"}
