@@ -50,11 +50,12 @@ const Afficheur = (p: Props) => {
 
     return (
         <div
-            className='flex flex-col justify-start align-bottom w-30 p-2 absolute top-0 left-20 border rounded mt-1'
+            className='flex flex-row sm:flex-col justify-start align-bottom w-30 p-2 
+            absolute top-0 left-20 border rounded mt-1'
             onClick={rotate}
         >
             <div
-                className='text-xs font-mono italic mb-1 text-center'
+                className='text-xs font-mono italic mb-1 text-center mr-2 sm:mr-0'
             >
                 objectif
             </div>

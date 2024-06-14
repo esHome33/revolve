@@ -408,11 +408,11 @@ export default function Home() {
                 <Link href={"https://github.com/esHome33/revolve"} className="text-blue-400">ESHome33</Link>
             </Typography>
 
-            <Typography className="py-2 block sm:hidden absolute top-4 right-5"
+            <Typography className="py-2 block sm:hidden absolute top-14 right-4"
                 aria-hidden
                 fontStyle={"normal"}
-                variant="h5"
-                style={{ writingMode: "vertical-rl" }}
+                variant="h4"
+                style={{ writingMode: "vertical-rl", color:"#0131b4" }}
             >
                 REVOLVE Sim
             </Typography>
