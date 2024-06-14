@@ -10,7 +10,6 @@ import Revolve from "@/lib/revolve";
 import { useRef, useState } from "react";
 import AddchartIcon from '@mui/icons-material/Addchart';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import { Typography } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Fileupload from "@/components/fupload";
@@ -19,17 +18,17 @@ import HelpScreen from "@/components/helpscreen";
 import NewGame from "@/components/newgame";
 import toast, { Toaster } from "react-hot-toast";
 import ResetAlert from "@/components/resetalert";
-//import PosvideAfficheur from "@/components/posvide";
+import Chooser from "@/components/chooser";
+import Afficheur from "@/components/afficheur";
+import { Typography } from "@mui/material";
 
 export default function Home() {
 
     // le jeu
     const jeu = useRef<Revolve | null>(null);
 
-    //const [myRev, setMyRev] = useState<Revolve>(new Revolve("XRGGYY RBYRY GBGGB RBRYB"));
     // la liste des mouvements effectués
     const [actionLog, setActionLog] = useState<string[]>([]);
-
 
     // un carré rouge ou vert si la position est admissible ou pas
     const [check, setCheck] = useState<boolean>(true);
@@ -37,18 +36,23 @@ export default function Home() {
     // alerte en cas de demande de reset
     const [resetOpen, setResetOpen] = useState<boolean>(false);
 
+    // chooser dialog
+    const [chooserOpen, setChooserOpen] = useState<boolean>(false);
+
     // new game dialog
     const [open, setOpen] = useState<boolean>(false);
 
+    /// dialogue d'aide
     const [helpOpen, setHelpOpen] = useState<boolean>(false);
-    //const [newgame, setNewgame] = useState<string>("XRGGYY RBYRY GBGGB RBRYB");
+
+    /// rafraichir l'affichage
     const [refresh, setRefresh] = useState<boolean>(false);
-    //let myRev = new Revolve("RRRRRXGGGGGBBBBBYYYYY");
-    //let myRev = new Revolve("RYYYYXGBBBBBYYYYYRRRR");
-    //let myRev = new Revolve("RGGGGXGBBBBBYYYYYRRRR");
-    //let myRev = new Revolve("XRGGYYRBRYBGBGGBRBYRY");
+
+    /// nombre de coups joués
     const [count, setCount] = useState<number | undefined>(undefined);
 
+    // les couleurs objectif
+    const [objectif, setObjectif] = useState<string>("RGBY");
 
     const router = useRouter();
 
@@ -75,6 +79,9 @@ export default function Home() {
     };
 
 
+    const toggleChooser = () => {
+        setChooserOpen(!chooserOpen);
+    }
 
     // const cree_nouveau = () => {
     //   const new_rev_str = myRev.to_string();
@@ -187,7 +194,7 @@ export default function Home() {
             } else {
                 toast("jeu déjà initialisé !", {
                     duration: 2000,
-                    icon:'🤷🏻',
+                    icon: '🤷🏻',
                     style: { backgroundColor: '#334155', color: 'lightyellow' },
                 })
             }
@@ -311,9 +318,25 @@ export default function Home() {
             setCheck(true);
             setCount(proposed_new_game.getLogSize());
         }
+    }
 
 
+    const valide_objectif = (couleurs: string) => {
+        if (couleurs !== "") {
+            const compo = couleurs.split('(');
+            if (compo.length === 2) {
+                const coul = compo[0].replace(" ", "");
+                console.log(`validation de la couleur ${coul}`);
+                setObjectif(()=>coul);
+                setChooserOpen(false);
+                setRefresh(!refresh);
+            }
+        }
+    }
 
+    const change_objectif = (new_objectif: string) => {
+        setObjectif(new_objectif);
+        setRefresh(!refresh);
     }
 
     return (
@@ -350,12 +373,32 @@ export default function Home() {
                     BACK
                 </button>
 
+                <button
+                    className="px-1 py-3  bg-gray-700 hover:bg-gray-400 hover:text-black 
+                    hover:shadow-md hover:shadow-white
+                    rounded h-10 text-xs text-center"
+                    onClick={toggleChooser}
+                >
+                    coul
+                </button>
+
             </div>
 
             <ResetAlert
                 onClose={okForReset}
                 open={resetOpen}
             />
+
+            {
+                (jeu.current) ?
+                    <Chooser
+                        game={jeu.current.initial_game}
+                        open={chooserOpen}
+                        close={toggleChooser}
+                        valide={valide_objectif}
+                    />
+                    : null
+            }
 
             <Typography className="py-2 hidden sm:block"
                 aria-hidden fontStyle={"italic"}
@@ -365,16 +408,21 @@ export default function Home() {
                 <Link href={"https://github.com/esHome33/revolve"} className="text-blue-400">ESHome33</Link>
             </Typography>
 
-            <Typography className="py-2 block sm:hidden"
-                aria-hidden fontStyle={"italic"}
-                variant="body2"
+            <Typography className="py-2 block sm:hidden absolute top-4 right-5"
+                aria-hidden
+                fontStyle={"normal"}
+                variant="h5"
+                style={{ writingMode: "vertical-rl" }}
             >
                 REVOLVE Sim
             </Typography>
 
+            <Afficheur
+                colors={objectif}
+                after_rotate={change_objectif}
+            />
 
-            <div className="flex min-h-screen flex-col justify-start 
-      sm:flex-row sm:justify-around">
+            <div className="flex min-h-screen flex-col justify-start sm:flex-row sm:justify-around mt-10">
 
                 <div className="flex flex-col items-center mb-2">
 

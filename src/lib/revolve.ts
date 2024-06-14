@@ -11,6 +11,8 @@ export default class Revolve {
 	private place_vide_h: number = 5;
 	private log: string[] = [];
 
+	// pour l'animation de la rotation des bagues 1 et 2 
+	// à l'aide de React-Spring/Web
 	public prec_1: Couleurs[][] = [];
 	public prec_2: Couleurs[][] = [];
 
