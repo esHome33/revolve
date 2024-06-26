@@ -73,9 +73,9 @@ const NewGame = (props: Props) => {
                 <Typography
                     className="mt-6 bg-slate-300 text-black py-1 px-3 rounded"
                 >
-                    <div className="flex flex-col sm:flex-row">
+                    <div className="flex flex-col sm:flex-row ">
                         <span
-                            className="text-xs text-blue-800 mr-2 font-mono italic"
+                            className="text-xs text-blue-800 mr-2 font-mono italic sm:my-auto"
                         >jeu aléatoire proposé :</span>
                         <span onClick={clic_random_game}>
                             {gengame}

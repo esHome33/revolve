@@ -1,6 +1,12 @@
 import Action from "./action";
 import { RED, GREEN, BLUE, YELLOW, EMPTY, Couleurs } from "./types";
 
+/**
+ * le jeu de Revolve et ses fonctionnalités !
+ * 
+ * @author ESHome33
+ * @copyright MIT License - © 2024 ESHome33
+ */
 export default class Revolve {
 	/**
 	 * initial game
@@ -16,6 +22,15 @@ export default class Revolve {
 	public prec_1: Couleurs[][] = [];
 	public prec_2: Couleurs[][] = [];
 
+	/**
+	 * Construit un nouveau jeu de Revolve à l'aide de la 
+	 * chaine de description des couleurs fournie.
+	 * 
+	 * Attention : ne valide pas qu'il y ait le bon nombre de chaque couleurs !
+	 * 
+	 * @param couleurs la chaine de description (R,G,B,Y et un seul X)
+	 * 
+	 */
 	constructor(couleurs: string) {
 		const cols_without_space = couleurs.replaceAll(" ", "");
 		this.initial_game = couleurs;

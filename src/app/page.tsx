@@ -181,6 +181,7 @@ export default function Home() {
         setActionLog([]);
         setCheck(true);
         setCount(undefined);
+        setCount(0);
 
         //setNewgame(saved);
         //setCoups("");
@@ -279,21 +280,31 @@ export default function Home() {
 
 
     const save_new_game = (newgame: string) => {
-        setOpen(!open);
-        const proposed_new_game = new Revolve(newgame);
+        let proposed_new_game:Revolve;
+        try {
+            proposed_new_game = new Revolve(newgame);
+        } catch (error) {
+            toast.error("1 La chaine de jeu saisie n'est pas valide !", {
+                duration: 3000,
+                style: { backgroundColor: '#334155', color: 'lightyellow' },
+            });
+            return;
+        }
         const resu = proposed_new_game.check_colors();
         if (resu) {
+            setOpen(!open);
             window.localStorage.setItem("revolve_board", proposed_new_game.initial_game);
             jeu.current = (proposed_new_game);
             const lg = proposed_new_game.getLog();
             setActionLog(lg);
             setCheck(true);
+            setCount(proposed_new_game.getLogSize());
             toast.success("New game !", {
                 duration: 2000,
                 style: { backgroundColor: '#334155', color: 'lightyellow' },
             });
         } else {
-            toast.error("La chaine de jeu saisie n'est pas valide !", {
+            toast.error("2 La chaine de jeu saisie n'est pas valide !", {
                 duration: 3000,
                 style: { backgroundColor: '#334155', color: 'lightyellow' },
             });
